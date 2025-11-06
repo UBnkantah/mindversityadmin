@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const connectMongoDB = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URL || "mongodb+srv://mindversityapi:mindversity2025@mvycluster.gk9dwah.mongodb.net/");
+    await mongoose.connect(process.env.DATABASE_URL || "mongodb+srv://mindversityadmin:admin2025@mindversity.shz2nxg.mongodb.net/?appName=mindversity");
     console.log("Database Connected");
   } catch (err) {
     console.log(`Database connection error, ${err}`);
