@@ -2,7 +2,7 @@ const {Router} = require("express");
 const { isAuthenticated } = require("../middleware/auth");
 const appRouter = Router();
 const {createContact, registeruser, loginuser, getSingleUser, getAllUsers, updateUser, createUser} = require("./controllers/userController");
-const { getAllProducts, createProduct, deleteProduct } = require("./controllers/productsController");
+const { getAllProducts, createProduct, deleteProduct, updateProduct } = require("./controllers/productsController");
 
 appRouter.post("/contact", createContact)
 appRouter.post("/register", registeruser)
@@ -16,5 +16,6 @@ appRouter.post("/createuser", createUser);
 appRouter.get("/products", getAllProducts);
 appRouter.post("/products", createProduct);
 appRouter.delete("/products/:id", deleteProduct);
+appRouter.patch("/products/:id", updateProduct);
 
 module.exports = appRouter;

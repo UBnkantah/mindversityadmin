@@ -142,7 +142,7 @@ const getSingleUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  console.log("checked");
+  // console.log("checked");
 
   try {
     const updateUserInfo = await User.findByIdAndUpdate(
