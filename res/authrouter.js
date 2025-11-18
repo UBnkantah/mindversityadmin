@@ -7,7 +7,7 @@ const { getAllProducts, createProduct, deleteProduct, updateProduct } = require(
 appRouter.post("/contact", createContact)
 appRouter.post("/register", registeruser)
 appRouter.post("/login", loginuser)
-appRouter.get("/getuser", isAuthenticated,getSingleUser);
+appRouter.get("/getuser", isAuthenticated, getSingleUser);
 appRouter.get("/users", getAllUsers);
 appRouter.patch("/update/:id", updateUser);
 appRouter.post("/createuser", createUser);
