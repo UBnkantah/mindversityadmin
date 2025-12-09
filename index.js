@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 // const connectMongoDB = require("./res/config");
-const appRouter = require("./res/authrouter");
+const appRouter = require("./authrouter");
 const app = express()
 const port = 5000
 

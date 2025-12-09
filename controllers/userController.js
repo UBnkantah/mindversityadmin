@@ -1,4 +1,4 @@
-const { sendEmail } = require("../../sendEmail");
+const { sendEmail } = require("../sendEmail");
 const {Contact, User} = require("../model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
