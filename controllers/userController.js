@@ -52,10 +52,14 @@ try {
 
 
 
-    sendEmail(mailOptions);
+    const emailResult = await sendEmail(mailOptions);
+    if (!emailResult.success) {
+      console.log("Failed to send email:", emailResult.error);
+    }
     res.json({
       message: "successful",
       newcontact,
+      emailSent: emailResult.success
     });
 } catch (err) {
     res.status(500).json({ error: `Internal server error ${err}` });
