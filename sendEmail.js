@@ -3,12 +3,12 @@ const nodemailer = require("nodemailer");
 const sendEmail = async (options) => {
     try{
   const transporter = nodemailer.createTransport({
-    host: "mail.privateemail.com",
+    host: "smtp.gmail.com",
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: "info@mindversitysport.com",
-      pass: "@Mindversity2025",
+      user: "dbserver",
+      pass: "wfpyxlzwfizjweuj",
     },
     tls: {
       rejectUnauthorized: false,
