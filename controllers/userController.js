@@ -1,7 +1,8 @@
 const { sendEmail } = require("../sendEmail");
-const {Contact, User} = require("../model");
+const { Contact, User } = require("../model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { sendTelegramNotification } = require("../sendTelegramNotification");
 
 require("dotenv").config();
 
@@ -29,44 +30,80 @@ const createSendToken = (user, statusCode, res) => {
 
 
 async function createContact(req, res) {
-    const {firstname, lastname, email, address, city, state, phoneno, altphoneno, message} = req.body;
+  const { firstname, lastname, email, address, city, state, phoneno, altphoneno, message } = req.body;
 
-try {
-    const newcontact = await Contact.create({firstname, lastname, email, address, city, state, phoneno, altphoneno, message})
-    const mailOptions = {
+  try {
+    // 1️⃣ Save contact to DB
+    const newcontact = await Contact.create({
+      firstname,
+      lastname,
       email,
+      address,
+      city,
+      state,
+      phoneno,
+      altphoneno,
+      message
+    });
+
+    // 2️⃣ Prepare email options
+    const mailOptions = {
+      email, // user's email for reply-to
       subject: "You have a new Order",
-      html: `Here are the customer's detais: <br/> 
-      <b>First Name</b>: ${firstname}, <br/>
-      <b>Last Name</b>: ${lastname}, <br/>
-      <b>Email Address</b>: ${email}, <br />
-      <b>Address</b>: ${address}, <br />
-      <b>City</b>: ${city}, <br/>
-      <b>State</b>: ${state}, <br />
-      <b>Phone No</b>: ${phoneno}, <br />
-      <b>Alt phoneno</b>: ${altphoneno}, <br />
-      <b>Message</b>: ${message}, <br />`
+      html: `
+        <h3>New Contact Submission</h3>
+        <p><b>First Name:</b> ${firstname}</p>
+        <p><b>Last Name:</b> ${lastname}</p>
+        <p><b>Email Address:</b> ${email}</p>
+        <p><b>Address:</b> ${address}</p>
+        <p><b>City:</b> ${city}</p>
+        <p><b>State:</b> ${state}</p>
+        <p><b>Phone No:</b> ${phoneno}</p>
+        <p><b>Alt Phone No:</b> ${altphoneno}</p>
+        <p><b>Message:</b> ${message}</p>
+      `
     };
 
-   
-
-
-
+    // 3️⃣ Send email
     const emailResult = await sendEmail(mailOptions);
     if (!emailResult.success) {
       console.log("Failed to send email:", emailResult.error);
     }
+
+    // 4️⃣ Prepare nicely formatted Telegram message (HTML supported)
+    const telegramMessage = `
+<b>New Contact Submission</b>
+
+<b>First Name:</b> ${firstname}
+<b>Last Name:</b> ${lastname}
+<b>Email Address:</b> ${email}
+<b>Address:</b> ${address}
+<b>City:</b> ${city}
+<b>State:</b> ${state}
+<b>Phone No:</b> ${phoneno}
+<b>Alt Phone No:</b> ${altphoneno}
+<b>Message:</b>
+${message}
+    `;
+
+    // 5️⃣ Send Telegram notification to admin
+    await sendTelegramNotification(telegramMessage);
+
+    // 6️⃣ Respond to frontend
     res.json({
       message: "successful",
       newcontact,
       emailSent: emailResult.success
     });
-} catch (err) {
+
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: `Internal server error ${err}` });
-}
+  }
 }
 
- async function registeruser(req, res) {
+
+async function registeruser(req, res) {
   // console.log("Hello")
   try {
     const { fullname, password, email } = req.body;
@@ -81,7 +118,7 @@ try {
       message: "successful",
       newuser,
     });
-    
+
   } catch (err) {
     res.status(500).json({ error: `Internal server error ${err}` });
   }
@@ -107,7 +144,7 @@ async function loginuser(req, res) {
 
 async function createUser(req, res) {
   try {
-    const { fullname,  email, company, city, state, number, postalcode , order, address} = req.body;
+    const { fullname, email, company, city, state, number, postalcode, order, address } = req.body;
     // const hashedPassword = await bcrypt.hash(password, 10);   
     const newuser = await User.create({
       fullname,
@@ -173,9 +210,9 @@ const getAllUsers = async (req, res) => {
       users
     })
   } catch (error) {
-        res.status(500).json({ error: `Internal Server Error: ${error}` });
-    }
+    res.status(500).json({ error: `Internal Server Error: ${error}` });
+  }
 
 }
 
-module.exports = {createContact, registeruser, loginuser, getSingleUser, updateUser, getAllUsers, updateUser, createUser};
+module.exports = { createContact, registeruser, loginuser, getSingleUser, updateUser, getAllUsers, updateUser, createUser };

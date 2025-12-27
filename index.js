@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
+const { initTelegramListener } = require("./initTelegramBotDebug");
 // const connectMongoDB = require("./res/config");
 const appRouter = require("./authrouter");
 const app = express()
-const port = 5000
+const port = 5000 
 
 const mongoose = require("mongoose");
 // mongodb+srv://mindversityadmin:admin2025@mindversity.shz2nxg.mongodb.net/?appName=mindversity
@@ -26,6 +27,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
 );
+initTelegramListener(true); // SET TRUE TO LISTEN TO BOT BUT FALSE TO NOT LISTEN TO BOT
 
 app.get("/", (req, res) => {
   res.status(200).send("Welcome")
